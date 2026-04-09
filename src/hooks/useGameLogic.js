@@ -76,19 +76,19 @@ export function useGameLogic() {
         setFeedbackOpen(true)
         setDiceDisabled(false)
       } else if (bonusTiles.includes(newPos)) {
-        setIsBonus(true)
-        openQuiz()
+        openQuiz(true)
       } else if (specialTiles.includes(newPos)) {
-        setIsBonus(false)
-        openQuiz()
+        openQuiz(false)
       } else {
         endTurn()
       }
     }, 600)
   }
 
-  const openQuiz = () => {
-    const data = isBonus ? bonusQuizData : quizData
+  const openQuiz = (bonus) => {
+    const bonusFlag = Boolean(bonus)
+    setIsBonus(bonusFlag)
+    const data = bonusFlag ? bonusQuizData : quizData
     const q = data[Math.floor(Math.random() * data.length)]
     setQuizQuestion(q)
     setQuizOpen(true)
