@@ -105,6 +105,7 @@ export default function App(){
             question={quizQuestion}
             onAnswer={handleQuizAnswer}
             isBonus={isBonus}
+            playerName={players[currentIndex]?.name}
           />
 
           <VictoryModal

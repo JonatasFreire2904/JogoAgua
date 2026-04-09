@@ -1,6 +1,6 @@
 export const pawnColors = ['bg-cyan-400','bg-indigo-500','bg-orange-400','bg-green-500','bg-pink-500','bg-purple-500'];
-export const specialTiles = [3,6,9,12,15,18];
-export const bonusTiles = [5,11,17,19];
+export const specialTiles = [1,4,6,8,12,15,18];
+export const bonusTiles = [3,9,11,17,22];
 export const pollutedTiles = [7, 14, 21];
 export const victoryWaterTiles = [2, 10, 20];
 export const pathCoordinates = [
