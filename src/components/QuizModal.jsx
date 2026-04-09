@@ -1,5 +1,5 @@
 import React from 'react'
-export default function QuizModal({ open, question, onAnswer, isBonus }){
+export default function QuizModal({ open, question, onAnswer, isBonus, playerName }){
   if(!open) return null
   const isBonusClass = isBonus ? 'bg-gradient-to-br from-red-100 to-red-50 border-red-300' : 'bg-white'
   const titleClass = isBonus ? 'text-red-600' : 'text-slate-800'
@@ -11,6 +11,9 @@ export default function QuizModal({ open, question, onAnswer, isBonus }){
         <h3 className={`text-2xl font-black text-center mb-2 italic ${titleClass}`}>
           {isBonus ? '💎 CARTA BONUS DIFÍCIL! 💎' : 'Desafio da Gota!'}
         </h3>
+        <p className="text-blue-700 text-center font-bold mb-3">
+          Carta para: {playerName}
+        </p>
         <p className="text-slate-600 text-center text-lg mb-6">{question?.q}</p>
         <div className="grid gap-3">
           {question?.a?.map((opt,i)=> (

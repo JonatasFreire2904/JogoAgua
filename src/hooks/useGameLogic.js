@@ -13,6 +13,7 @@ export function useGameLogic() {
   const [quizOpen, setQuizOpen] = useState(false)
   const [quizQuestion, setQuizQuestion] = useState(null)
   const [isBonus, setIsBonus] = useState(false)
+  const [quizPlayerName, setQuizPlayerName] = useState('')
   const [victoryOpen, setVictoryOpen] = useState(false)
   const [victoryPlayer, setVictoryPlayer] = useState('')
 
@@ -88,8 +89,10 @@ export function useGameLogic() {
   }
 
   const openQuiz = () => {
+    const idx = currentIndex
     const data = isBonus ? bonusQuizData : quizData
     const q = data[Math.floor(Math.random() * data.length)]
+    setQuizPlayerName(players[idx]?.name || '')
     setQuizQuestion(q)
     setQuizOpen(true)
   }
@@ -158,6 +161,7 @@ export function useGameLogic() {
     quizOpen,
     quizQuestion,
     isBonus,
+    quizPlayerName,
     victoryOpen,
     victoryPlayer,
     feedbackOpen,

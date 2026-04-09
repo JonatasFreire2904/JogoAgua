@@ -25,6 +25,7 @@ export default function App(){
     quizOpen,
     quizQuestion,
     isBonus,
+    quizPlayerName,
     victoryOpen,
     victoryPlayer,
     feedbackOpen,
@@ -105,6 +106,7 @@ export default function App(){
             question={quizQuestion}
             onAnswer={handleQuizAnswer}
             isBonus={isBonus}
+            playerName={quizPlayerName}
           />
 
           <VictoryModal
