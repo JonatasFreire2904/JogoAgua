@@ -6,6 +6,7 @@ export function useGameLogic() {
   const [showSetup, setShowSetup] = useState(true)
   const [players, setPlayers] = useState([])
   const [positions, setPositions] = useState([])
+  const [skipTurns, setSkipTurns] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [diceValue, setDiceValue] = useState('?')
   const [diceDisabled, setDiceDisabled] = useState(false)
@@ -25,6 +26,7 @@ export function useGameLogic() {
   const startGame = (ply) => {
     setPlayers(ply)
     setPositions(new Array(ply.length).fill(0))
+    setSkipTurns(new Array(ply.length).fill(false))
     setCurrentIndex(0)
     setShowSetup(false)
   }
@@ -37,7 +39,29 @@ export function useGameLogic() {
     })
   }
 
+  const moveWithBounceAtFinish = (startPos, stepsForward) => {
+    const target = startPos + stepsForward
+    if (target <= totalTiles) return target
+
+    const overflow = target - totalTiles
+    return totalTiles - overflow
+  }
+
   const rollDice = () => {
+    if (skipTurns[currentIndex]) {
+      setSkipTurns(prev => {
+        const copy = [...prev]
+        copy[currentIndex] = false
+        return copy
+      })
+      setFeedbackTitle('Vez perdida')
+      setFeedbackMessage(`${players[currentIndex]?.name || 'Jogador'} perde esta rodada por ter caído em água poluída.`)
+      setFeedbackVariant('error')
+      setFeedbackOpen(true)
+      endTurn()
+      return
+    }
+
     setDiceDisabled(true)
     setDiceValue('🎲')
     
@@ -55,9 +79,7 @@ export function useGameLogic() {
 
   const movePlayer = (steps) => {
     const idx = currentIndex
-    let newPos = (positions[idx] || 0) + steps
-
-    if (newPos >= totalTiles) newPos = totalTiles
+    let newPos = moveWithBounceAtFinish((positions[idx] || 0), steps)
     updatePosition(idx, newPos)
 
     setTimeout(() => {
@@ -65,14 +87,21 @@ export function useGameLogic() {
         setVictoryPlayer(players[idx].name)
         setVictoryOpen(true)
       } else if (pollutedTiles.includes(newPos)) {
+        const playerName = players[idx]?.name || 'Jogador'
+        setSkipTurns(prev => {
+          const copy = [...prev]
+          copy[idx] = true
+          return copy
+        })
         setFeedbackTitle('Água poluída')
-        setFeedbackMessage('Você perde a próxima vez!')
+        setFeedbackMessage(`${playerName}, você perde a próxima vez!`)
         setFeedbackVariant('error')
         setFeedbackOpen(true)
-        endTurnAfterSpecial()
+        endTurn()
       } else if (victoryWaterTiles.includes(newPos)) {
+        const playerName = players[idx]?.name || 'Jogador'
         setFeedbackTitle('Água da Vitória')
-        setFeedbackMessage('Você joga de novo!')
+        setFeedbackMessage(`${playerName}, você joga de novo!`)
         setFeedbackVariant('success')
         setFeedbackOpen(true)
         setDiceDisabled(false)
@@ -109,7 +138,7 @@ export function useGameLogic() {
       setFeedbackMessage(isBonus ? 'Carta BONUS - Avance 2 casas!' : 'Avance 1 casa.')
       setFeedbackVariant('success')
       setFeedbackOpen(true)
-      newPos = Math.min(totalTiles, newPos + bonus)
+      newPos = moveWithBounceAtFinish(newPos, bonus)
       updatePosition(idx, newPos)
     } else {
       setFeedbackTitle('Resposta errada')
@@ -130,12 +159,6 @@ export function useGameLogic() {
   }
 
   const endTurn = () => {
-    setCurrentIndex(ci => (ci + 1) % players.length)
-    setDiceDisabled(false)
-    setDiceValue('?')
-  }
-
-  const endTurnAfterSpecial = () => {
     setCurrentIndex(ci => (ci + 1) % players.length)
     setDiceDisabled(false)
     setDiceValue('?')

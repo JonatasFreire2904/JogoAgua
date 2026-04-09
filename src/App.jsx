@@ -109,6 +109,7 @@ export default function App(){
           <Board
             players={players}
             positions={positions}
+            currentIndex={currentIndex}
           />
 
           <QuizModal
