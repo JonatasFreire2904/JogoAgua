@@ -44,8 +44,10 @@ export default function App(){
   const [rulesDocument, setRulesDocument] = useState(null)
   const [rulesLoading, setRulesLoading] = useState(false)
   const [rulesError, setRulesError] = useState(null)
+  const [rulesRequireAck, setRulesRequireAck] = useState(false)
 
-  const openRules = async () => {
+  const openRules = async (requireAck = false) => {
+    setRulesRequireAck(requireAck)
     setRulesError(null)
     setRulesLoading(true)
     setRulesOpen(true)
@@ -62,6 +64,14 @@ export default function App(){
 
   const closeRules = () => {
     setRulesOpen(false)
+    if (rulesRequireAck) {
+      setRulesRequireAck(false)
+    }
+  }
+
+  const handleStartGame = async (playersData) => {
+    startGame(playersData)
+    await openRules(true)
   }
 
   useEffect(()=>{
@@ -74,10 +84,10 @@ export default function App(){
     <main className="w-full max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border-2 sm:border-4 border-blue-200">
 
       {showSetup && (
-        <SetupScreen onStart={startGame} onShowRules={openRules} />
+        <SetupScreen onStart={handleStartGame} onShowRules={openRules} />
       )}
 
-      {!showSetup && (
+      {!showSetup && !rulesRequireAck && (
         <>
           <Header onShowRules={openRules} />
 
@@ -123,6 +133,7 @@ export default function App(){
         loading={rulesLoading}
         error={rulesError}
         onClose={closeRules}
+        requireAck={rulesRequireAck}
       />
 
       <FeedbackModal

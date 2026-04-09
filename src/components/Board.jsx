@@ -60,10 +60,6 @@ export default function Board({ players, positions }){
                 </div>
               </div>
             ))}
-            {/* Etiqueta */}
-            <div className="absolute top-32 left-1/2 transform -translate-x-1/2 mt-2 bg-white px-3 py-1 rounded-full shadow-md border-2 border-blue-400 text-center font-bold text-blue-600 text-xs whitespace-nowrap">
-              Cartas Quiz
-            </div>
           </div>
         </div>
 
