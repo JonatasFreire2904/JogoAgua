@@ -7,7 +7,7 @@ export class StaticPdfDocumentService extends IDocumentService {
     if (id !== 'game-rules') return null
 
     // Em Vite, arquivos estáticos em `docs/` na raiz podem ser servidos diretamente
-    const pdfUrl = '/docs/JogoDigital.pdf'
+    const pdfUrl = '/docs/AventuraNoDesafioDaAgua.pdf'
 
     return new Document({
       id: 'game-rules',

@@ -81,8 +81,7 @@ export default function App(){
   },[])
 
   return (
-    <main className="w-full max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden border-2 sm:border-4 border-blue-200">
-
+    <main className="w-full max-w-4xl mx-auto bg-white rounded-none sm:rounded-2xl shadow-xl overflow-hidden border-0 sm:border-4 border-blue-200 min-h-screen flex flex-col">
       {showSetup && (
         <SetupScreen onStart={handleStartGame} onShowRules={openRules} />
       )}
@@ -91,7 +90,7 @@ export default function App(){
         <>
           <Header onShowRules={openRules} />
 
-          <section className="p-6 border-b border-blue-100 bg-blue-50/50">
+          <section className="p-2 sm:p-6 border-b border-blue-100 bg-blue-50/50">
             <Controls
               onRoll={rollDice}
               disabled={diceDisabled}
@@ -144,7 +143,6 @@ export default function App(){
         variant={feedbackVariant}
         onClose={closeFeedback}
       />
- 
     </main>
   )
 }
