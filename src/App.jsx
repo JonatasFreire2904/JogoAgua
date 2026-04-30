@@ -22,6 +22,7 @@ export default function App(){
     currentIndex,
     diceValue,
     diceDisabled,
+    movingPlayerIndex,
     quizOpen,
     quizQuestion,
     isBonus,
@@ -109,6 +110,7 @@ export default function App(){
             players={players}
             positions={positions}
             currentIndex={currentIndex}
+            movingPlayerIndex={movingPlayerIndex}
           />
 
           <QuizModal

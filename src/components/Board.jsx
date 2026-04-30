@@ -80,7 +80,7 @@ const getPawnOffset = (stackIndex, stackTotal) => {
   }
 }
 
-export default function Board({ players, positions, currentIndex }){
+export default function Board({ players, positions, currentIndex, movingPlayerIndex = null }){
   const [isMobileBoard, setIsMobileBoard] = useState(false)
   const layout = isMobileBoard ? MOBILE_LAYOUT : DESKTOP_LAYOUT
   const boardCoordinates = layout.coordinates
@@ -199,7 +199,7 @@ export default function Board({ players, positions, currentIndex }){
             return (
               <div 
                 key={i} 
-                className={`pawn pawn-transition ${p.color}`} 
+                className={`pawn pawn-transition ${movingPlayerIndex === i ? 'pawn-moving' : ''} ${p.color}`} 
                 style={{ 
                   left: `calc(${centerXPercent}% + ${offsetX}px)`,
                   top: `calc(${centerYPercent}% + ${offsetY}px)`,

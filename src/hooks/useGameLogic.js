@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { quizData, bonusQuizData, specialTiles, bonusTiles, pollutedTiles, victoryWaterTiles, totalTiles } from '../gameData'
 
+const MOVEMENT_STEP_DELAY = 340
+
 export function useGameLogic() {
 
   const [showSetup, setShowSetup] = useState(true)
@@ -10,6 +12,7 @@ export function useGameLogic() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [diceValue, setDiceValue] = useState('?')
   const [diceDisabled, setDiceDisabled] = useState(false)
+  const [movingPlayerIndex, setMovingPlayerIndex] = useState(null)
   const [lastRoll, setLastRoll] = useState(null)
   const [quizOpen, setQuizOpen] = useState(false)
   const [quizQuestion, setQuizQuestion] = useState(null)
@@ -47,6 +50,41 @@ export function useGameLogic() {
     return totalTiles - overflow
   }
 
+  const buildMovementPath = (startPos, stepsForward) => {
+    const path = []
+    let position = startPos
+    let direction = 1
+
+    for (let step = 0; step < stepsForward; step += 1) {
+      if (position === totalTiles) direction = -1
+      position += direction
+      path.push(position)
+    }
+
+    return path
+  }
+
+  const animatePlayerMovement = (playerIndex, path) => {
+    if (path.length === 0) return Promise.resolve(positions[playerIndex] || 0)
+
+    setMovingPlayerIndex(playerIndex)
+
+    return new Promise((resolve) => {
+      path.forEach((position, pathIndex) => {
+        setTimeout(() => {
+          updatePosition(playerIndex, position)
+
+          if (pathIndex === path.length - 1) {
+            setTimeout(() => {
+              setMovingPlayerIndex(null)
+              resolve(position)
+            }, MOVEMENT_STEP_DELAY)
+          }
+        }, MOVEMENT_STEP_DELAY * pathIndex)
+      })
+    })
+  }
+
   const rollDice = () => {
     if (skipTurns[currentIndex]) {
       setSkipTurns(prev => {
@@ -77,10 +115,11 @@ export function useGameLogic() {
     }, 800)
   }
 
-  const movePlayer = (steps) => {
+  const movePlayer = async (steps) => {
     const idx = currentIndex
-    let newPos = moveWithBounceAtFinish((positions[idx] || 0), steps)
-    updatePosition(idx, newPos)
+    const startPos = positions[idx] || 0
+    const movementPath = buildMovementPath(startPos, steps)
+    const newPos = await animatePlayerMovement(idx, movementPath)
 
     setTimeout(() => {
       if (newPos === totalTiles) {
@@ -181,6 +220,7 @@ export function useGameLogic() {
     currentIndex,
     diceValue,
     diceDisabled,
+    movingPlayerIndex,
     quizOpen,
     quizQuestion,
     isBonus,
